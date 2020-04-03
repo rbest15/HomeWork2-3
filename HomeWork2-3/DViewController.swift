@@ -10,9 +10,13 @@ class DViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        addButton.reactive.tap.observe { (_) in
-            self.counter.value += 1
+        addButton.reactive.tap.observe { [weak self]  _ in
+            self?.counter.value += 1
         }
         counter.map { number in "\(number)"}.bind(to: counterLabel)
+    }
+    
+    deinit {
+        print("DViewController---")
     }
 }

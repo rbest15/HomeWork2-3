@@ -13,4 +13,7 @@ class EViewController: UIViewController {
         rocketLabel.alpha = 0
         combineLatest(key1Button.reactive.tap, key2Button.reactive.tap).map { $0 == $1}.filter { true }.map { 1 }.bind(to: rocketLabel.reactive.alpha)
     }
+    deinit {
+        print("EViewController---")
+    }
 }

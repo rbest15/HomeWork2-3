@@ -18,17 +18,21 @@ class CViewController: UIViewController {
             cell.nameLable.text = dataSourse[indexPath.row]
             return cell
         }
-        addButton.reactive.tap.observeNext {
-            self.namesStack.insert(self.namesArray.randomElement()!, at: 0)
+        addButton.reactive.tap.observeNext { [weak self] in
+            self?.namesStack.insert(self?.namesArray.randomElement()! ?? "", at: 0)
         }
-        removeLastButton.reactive.tap.observeNext {
-            if self.namesStack.count != 0 {
-                self.namesStack.removeLast()
+        removeLastButton.reactive.tap.observeNext { [weak self] in
+            if self?.namesStack.count != 0 {
+                self?.namesStack.removeLast()
             } else {
                 let alert = UIAlertController(title: "Ошибка!", message: "Разогнался! Нечего удалять!", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "Ладно, ладно, извини", style: .destructive, handler: nil))
-                self.present(alert, animated: true)
+                self?.present(alert, animated: true)
             }
         }
+    }
+    
+    deinit {
+        print("CViewController---")
     }
 }
