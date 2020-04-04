@@ -4,7 +4,7 @@ import ReactiveKit
 
 class ViewController: UIViewController {
     
-    private let homeworks = ["Задача A","Задача B","Задача C","Задача D","Задача E"]
+    private let homeworks = ["Задача A","Задача B","Задача C","Задача D","Задача E","Bonus"]
     @IBOutlet weak var homeWorkTableView: UITableView!
     
     override func viewDidLoad() {
@@ -27,24 +27,25 @@ extension ViewController : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.row {
         case 0:
-            let vc = storyboard!.instantiateViewController(identifier: "aHomeWork") as! AViewController
-            present(vc, animated: true)
+            open(identifier: "aHomeWork", vc: AViewController.self)
         case 1:
-            let vc = storyboard!.instantiateViewController(identifier: "bHomeWork") as! BViewController
-            present(vc, animated: true)
+            open(identifier: "bHomeWork", vc: BViewController.self)
         case 2:
-            let vc = storyboard!.instantiateViewController(identifier: "cHomeWork") as! CViewController
-            present(vc, animated: true)
+            open(identifier: "cHomeWork", vc: CViewController.self)
         case 3:
-            let vc = storyboard!.instantiateViewController(identifier: "dHomeWork") as! DViewController
-            present(vc, animated: true)
+            open(identifier: "dHomeWork", vc: DViewController.self)
         case 4:
-        let vc = storyboard!.instantiateViewController(identifier: "eHomeWork") as! EViewController
-        present(vc, animated: true)
+            open(identifier: "eHomeWork", vc: EViewController.self)
+        case 5:
+            open(identifier: "bonusHomeWork", vc: BonusViewController.self)
         default:
             let alert = UIAlertController()
             alert.addAction(UIAlertAction(title: "Error!", style: .destructive, handler: nil))
             present(alert, animated: true)
         }
+    }
+    func open<T: UIViewController>(identifier: String, vc: T.Type) {
+        let vc = storyboard!.instantiateViewController(identifier: identifier) as! T
+        present(vc, animated: true)
     }
 }
