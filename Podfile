@@ -3,8 +3,7 @@
 
 target 'HomeWork2-3' do
   # Comment the next line if you don't want to use dynamic frameworks
-  use_frameworks!
-  pod 'Bond'
+  pod 'Bond', :modular_headers => true
   # Pods for HomeWork2-3
 
 end

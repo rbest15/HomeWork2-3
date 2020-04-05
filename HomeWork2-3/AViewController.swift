@@ -2,7 +2,7 @@ import UIKit
 import Bond
 import ReactiveKit
 
-class AViewController: UIViewController {
+class AViewController: UIViewController, UITextFieldDelegate {
 
 
     @IBOutlet weak var emailTextField: UITextField!
@@ -15,20 +15,28 @@ class AViewController: UIViewController {
         emailTextField.reactive.text.ignoreNils().filter { $0.count > 0 }.map { [weak self] in  self?.isValidEmail($0) ?? false ? "" : "Incorrect email!" }.bind(to: errorLabel)
         passwordTextField.reactive.text.ignoreNils().filter { $0.count > 0}.map { $0.count < 6 ? "Short password" : "" }.bind(to: errorLabel)
         sendButton.reactive.controlEvents(.touchUpInside).observeNext { [weak self] in
-            let alert = UIAlertController(title: "Ok", message: "Successfully sent!", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
-            self?.present(alert, animated: true)
+            self?.createAlert()
         }
         combineLatest(self.emailTextField.reactive.text, self.passwordTextField.reactive.text)
             .map { [weak self] (email, pass) in
                 return self?.isValidEmail(email!) ?? false && pass!.count > 5 }
             .bind(to: self.sendButton.reactive.isEnabled)
+        passwordTextField.returnKeyType = .done
+        emailTextField.returnKeyType = .next
+        emailTextField.reactive.controlEvents(.editingDidEndOnExit).observeNext { [weak self](_) in
+            self?.passwordTextField.becomeFirstResponder()
+        }
     }
 
     func isValidEmail(_ email: String) -> Bool {
         let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
         let emailPred = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
         return emailPred.evaluate(with: email)
+    }
+    func createAlert(){
+        let alert = UIAlertController(title: "Ok", message: "Successfully sent!", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        self.present(alert, animated: true)
     }
     deinit {
         print("AViewController---")

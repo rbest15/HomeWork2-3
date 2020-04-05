@@ -1,4 +1,4 @@
-framework module Differ {
+module Differ {
   umbrella header "Differ-umbrella.h"
 
   export *
