@@ -4,46 +4,44 @@ import ReactiveKit
 
 class ViewController: UIViewController {
     
-    private let homeworks = ["Задача A","Задача B","Задача C","Задача D","Задача E","Bonus"]
+    private let homeworks = MutableObservableArray<String>(["Задача A","Задача B","Задача C","Задача D","Задача E","Bonus"])
     @IBOutlet weak var homeWorkTableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        homeworks.bind(to: homeWorkTableView) { (dataSourse, indexPath, tableView) -> UITableViewCell in
+            let cell = tableView.dequeueReusableCell(withIdentifier: "hmCell") as! HMTableViewCell
+            cell.homeWorkCell.text = self.homeworks[indexPath.row]
+            return cell
+        }
+        homeWorkTableView.reactive.selectedRowIndexPath.observeNext { [unowned self](indexPath) in
+            switch indexPath.row {
+            case 0:
+                self.open(identifier: "aHomeWork", vc: AViewController.self)
+            case 1:
+                self.open(identifier: "bHomeWork", vc: BViewController.self)
+            case 2:
+                self.open(identifier: "cHomeWork", vc: CViewController.self)
+            case 3:
+                self.open(identifier: "dHomeWork", vc: DViewController.self)
+            case 4:
+                self.open(identifier: "eHomeWork", vc: EViewController.self)
+            case 5:
+                self.open(identifier: "bonusHomeWork", vc: BonusViewController.self)
+            default:
+                let alert = UIAlertController()
+                alert.addAction(UIAlertAction(title: "Error!", style: .destructive, handler: nil))
+                self.present(alert, animated: true)
+            }
+        }
+    }
+    
+    deinit {
+        print("InitialVC---")
     }
 }
 
-extension ViewController : UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        homeworks.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "hmCell") as! HMTableViewCell
-        cell.homeWorkCell.text = homeworks[indexPath.row]
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        switch indexPath.row {
-        case 0:
-            open(identifier: "aHomeWork", vc: AViewController.self)
-        case 1:
-            open(identifier: "bHomeWork", vc: BViewController.self)
-        case 2:
-            open(identifier: "cHomeWork", vc: CViewController.self)
-        case 3:
-            open(identifier: "dHomeWork", vc: DViewController.self)
-        case 4:
-            open(identifier: "eHomeWork", vc: EViewController.self)
-        case 5:
-            open(identifier: "bonusHomeWork", vc: BonusViewController.self)
-        default:
-            let alert = UIAlertController()
-            alert.addAction(UIAlertAction(title: "Error!", style: .destructive, handler: nil))
-            present(alert, animated: true)
-        }
-    }
+extension ViewController {
     func open<T: UIViewController>(identifier: String, vc: T.Type) {
         let vc = storyboard!.instantiateViewController(identifier: identifier) as! T
         present(vc, animated: true)
