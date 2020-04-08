@@ -21,6 +21,22 @@ class CViewController: UIViewController {
         addButton.reactive.tap.observeNext { [weak self] in
             self?.namesStack.insert(self?.namesArray.randomElement()! ?? "", at: 0)
         }
+        addButton.reactive.longPressGesture(numberOfTaps: 0, numberOfTouches: 1, minimumPressDuration: 0.2, allowableMovement: 5).observeNext { (ltpg) in
+            self.namesStack.insert(self.namesArray.randomElement()!, at: 0)
+        }
+        removeLastButton.reactive.longPressGesture(numberOfTaps: 0, numberOfTouches: 1, minimumPressDuration: 0.5, allowableMovement: 5).observeNext { (lpg) in
+            if lpg.state == .began {
+                let alert = UIAlertController(title: "Внимание", message: "Удалить всё?", preferredStyle: .actionSheet)
+                alert.addAction(UIAlertAction(title: "Нет", style: .cancel, handler: { (_) in
+                    return
+                }))
+                alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (_) in
+                    self.namesStack.removeAll()
+                }))
+                self.present(alert, animated: true)
+            }
+        }
+        
         removeLastButton.reactive.tap.observeNext { [weak self] in
             if self?.namesStack.count != 0 {
                 self?.namesStack.removeLast()
@@ -31,7 +47,6 @@ class CViewController: UIViewController {
             }
         }
     }
-    
     deinit {
         print("CViewController---")
     }
